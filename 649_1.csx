@@ -1,17 +1,42 @@
-public string PredictPartyVictory(string senate) 
+public string PredictPartyVictory(string senate)
 {
-    // 1. RDDR
-    // RDDR -> [-]
-    // DDR -> [R]
-    // DR -> [-]
-    // R -> [D]
-    // - -> [D]
+    Queue<int> rQueue = [];
+    Queue<int> dQueue = [];
+    int nextRoundPos = senate.Length;
 
-    // 2. RDD
-    // RRDD -> [-]
-    // RDD -> [R]
-    // DD -> [RR]
-    //
+    for (var i = 0; i < senate.Length; i++)
+    {
+        switch (senate[i])
+        {
+            case 'R': rQueue.Enqueue(i); break;
+            case 'D': dQueue.Enqueue(i); break;
+            default: throw new ArgumentException("Party is not supported");
+        }
+    }
 
-    return "Radiant";
+    while (true)
+    {
+        switch (rQueue.TryPeek(out var activeRadiant), dQueue.TryPeek(out var activeDire))
+        {
+            case (false, true): return "Dire";
+            case (true, false): return "Radiant";
+            default:
+                Console.WriteLine($"Fighting senators: D{activeDire} vs. R{activeRadiant}");
+                if (activeRadiant > activeDire)
+                {
+                    _ = rQueue.Dequeue();
+                    dQueue.Dequeue();
+                    dQueue.Enqueue(++nextRoundPos);
+                }
+                else
+                {
+                    _ = dQueue.Dequeue();
+                    rQueue.Dequeue();
+                    rQueue.Enqueue(++nextRoundPos);
+                }
+                break;
+        }
+    }
 }
+
+Console.WriteLine(PredictPartyVictory("RDD"));
