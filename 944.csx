@@ -6,11 +6,7 @@ public int MinDeletionSize(string[] strs)
     for (int i = 0; i < strs[0].Length; i++)
     {
         strs
-            .Select(str =>
-            {
-                Write($" {str[i]}");
-                return str[i];
-            })
+            .Select(str => str[i])
             .Aggregate((acc, val) =>
             {
                 res[i] = res[i] & acc <= val;
